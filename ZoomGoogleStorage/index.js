@@ -25,5 +25,5 @@ exports.uploadZoomRecordingToGoogleStorage = (req, res) => {
 
     uploadFile(formattedFileName, downloadUrl, accessToken);
 
-    res.status(200).send(`Uploaded ${fileName} to Google Storage Bucket: ${bucketName}`)
+    res.status(200).send(`Uploaded ${formattedFileName} to Google Storage Bucket: ${bucketName}`)
 }
