@@ -14,16 +14,29 @@ async function uploadFile (fileName, downloadUrl, accessToken) {
 
     const res = await fetch(`${downloadUrl}?access_token=${accessToken}`);
 
-    res.body.pipe(writeStream);
+    await new Promise((resolve, reject) => {
+        res.body.pipe(writeStream);
+
+        writeStream.on('finish', resolve);
+        writeStream.on('error', reject);
+    });
+
+    const storageFileUrl = `https://storage.cloud.google.com/${bucketName}/${fileName}`;
+
+    return storageFileUrl;
 }
 
-
-exports.uploadZoomRecordingToGoogleStorage = (req, res) => {
+exports.uploadZoomRecordingToGoogleStorage = async (req, res) => {
     const { fileName, fileExt, downloadUrl, accessToken } = req.body;
 
     const formattedFileName = `${snakeCase(fileName)}.${fileExt}`;
 
-    uploadFile(formattedFileName, downloadUrl, accessToken);
+    const storageFileUrl = await uploadFile(formattedFileName, downloadUrl, accessToken);
 
-    res.status(200).send(`Uploaded ${formattedFileName} to Google Storage Bucket: ${bucketName}`)
-}
+    const data = {
+        message: `Uploaded ${formattedFileName} to Google Storage Bucket: ${bucketName}`,
+        storageFileUrl: storageFileUrl
+    };
+
+    res.status(200).send(data);
+};
