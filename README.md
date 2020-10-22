@@ -14,4 +14,6 @@ https://cloud.google.com/docs/authentication/production#passing_variable
 ## Deploy
 https://cloud.google.com/sdk/gcloud/reference/functions/deploy
 
-example: gcloud functions deploy '{{functionName}}' --runtime nodejs10 --trigger-http --entry-point={{exportedFunctionName}}
+example: gcloud functions deploy '{{functionName}}' --timeout=TIMEOUT  --runtime nodejs10 --trigger-http --entry-point={{exportedFunctionName}}
+
+TIMEOUT is represented in seconds. The max timeout is 9 minutes or 540 seconds. (example: --timeout=540)
